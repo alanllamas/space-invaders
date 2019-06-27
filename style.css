@@ -11,6 +11,7 @@ canvas {
     background: url('./sprites/Backgrounds/purple.png')
 }
 
-#player {
-    display: none;
+#player,
+#laser {
+    /* display: none; */
 }
