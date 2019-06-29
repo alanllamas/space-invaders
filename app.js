@@ -170,10 +170,7 @@ class Laser {
 player_1 = new Ship();
 player_1.draw();
 player_1.draw_shoot();
-shoot_left = h => {
-	ctx.clearRect(initial_width, h, canvas_w, canvas_h);
-	shoot(initial_width, h);
-};
+
 
 initial_width = width;
 initial_height = height;
