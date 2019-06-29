@@ -13,5 +13,5 @@ canvas {
 
 #player,
 #laser {
-    display: none;
+    /* display: none; */
 }
