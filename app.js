@@ -174,10 +174,7 @@ player_1.draw_shoot();
 
 initial_width = width;
 initial_height = height;
-shoot_right = h => {
-	ctx.clearRect(initial_width + ship_data.width - 8, h, canvas_w, canvas_h);
-	shoot(initial_width + ship_data.width - 8, h);
-};
+
 
 shoot_center = h => {
 	ctx.clearRect(
