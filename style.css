@@ -12,6 +12,9 @@ canvas {
 }
 
 #player,
-#laser {
-    /* display: none; */
+#laser,
+#hit1,
+#hit2,
+#big_rock {
+    display: none;
 }

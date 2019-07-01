@@ -251,9 +251,29 @@ class Rock{
 
 player_1 = new Ship();
 player_1.draw();
-player_1.draw_shoot();
+// player_1.draw_shoot();
+// rock = new Rock('big')
+// rock.move()
+// setTimeout(() => {
+	
+// 	rock2 = new Rock('tiny')
+// 	rock2.move()
+// }, 2000);
+generate_meteor = (meteor, i) =>{
 
-
+	rock = new Rock(meteor, meteor + '_' + i)
+	rock.move()
+	
+	
+}
+for (let i = 0; i < 100; i++) {
+	setTimeout(() => {
+		let meteor = i % 4 == 0 ? 'big' : i % 3 == 0 ? 'medium': i % 2 == 0 ? 'small': 'tiny' 
+		// console.log(meteor);
+		
+		generate_meteor(meteor, i)	
+	}, 700 * i);
+}
 initial_width = width;
 initial_height = height;
 
