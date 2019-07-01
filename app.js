@@ -33,7 +33,7 @@ let shoot_interval;
 
 let Down = e => {
 	cxc = e.keyCode;
-	// if (cxc == 32 && pressed_s == 0) (pressed_s = 1), player_1.draw_shoot();
+	if (cxc == 32 && pressed_s == 0) (pressed_s = 1), player_1.draw_shoot();
 	if (cxc == 37 && pressed_l == 0) (pressed_l = 1), player_1.move();
 	if (cxc == 38 && pressed_u == 0) (pressed_u = 1), player_1.move();
 	if (cxc == 39 && pressed_r == 0) (pressed_r = 1), player_1.move();
@@ -42,7 +42,7 @@ let Down = e => {
 };
 let Up = e => {
 	cxc = e.keyCode;
-	// if (cxc == 32 && pressed_s == 1) (pressed_s = 0), player_1.draw_shoot();
+	if (cxc == 32 && pressed_s == 1) (pressed_s = 0), player_1.draw_shoot();
 	if (cxc == 37 && pressed_l == 1) (pressed_l = 0), player_1.move();
 	if (cxc == 38 && pressed_u == 1) (pressed_u = 0), player_1.move();
 	if (cxc == 39 && pressed_r == 1) (pressed_r = 0), player_1.move();
@@ -58,7 +58,7 @@ class Ship {
 		this.laser = document.getElementById("laser");
 		this.shoot_speed = 1;
 		this.shoot_strength = 1;
-		this.laser_amount = 3;
+		this.laser_amount = 10;
 		this.speed = 4;
 		this.width = 50;
 		this.height = 38;
@@ -68,17 +68,16 @@ class Ship {
 		this.y = this.init_y;
 	}
 	move() {
+
 		clearInterval(up_interval);
 		clearInterval(down_interval);
 		clearInterval(left_interval);
 		clearInterval(right_interval);
-		console.log("x : ", this.x);
-		console.log("y : ", this.y);
 
 		if (pressed_u == 1) {
 			up_interval = setInterval(() => {
 				if (this.y > margin) {
-					ctx.clearRect(this.x, this.y, canvas_w, canvas_h);
+					this.remove()
 					this.y -= this.speed;
 					this.draw();
 				}
@@ -87,7 +86,7 @@ class Ship {
 		if (pressed_d == 1) {
 			down_interval = setInterval(() => {
 				if (this.y < init_height) {
-					ctx.clearRect(this.x, this.y, canvas_w, canvas_h);
+					this.remove()
 					this.y += movement;
 					this.draw();
 				}
@@ -96,7 +95,7 @@ class Ship {
 		if (pressed_l == 1) {
 			left_interval = setInterval(() => {
 				if (this.x > margin) {
-					ctx.clearRect(this.x, this.y, canvas_w, canvas_h);
+					this.remove()
 					this.x -= movement;
 					this.draw();
 				}
@@ -105,7 +104,7 @@ class Ship {
 		if (pressed_r == 1) {
 			right_interval = setInterval(() => {
 				if (this.x < init_width - margin) {
-					ctx.clearRect(this.x, this.y, canvas_w, canvas_h);
+					this.remove()
 					this.x += movement;
 					this.draw();
 				}
@@ -115,54 +114,94 @@ class Ship {
 	draw() {
 		ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
 	}
-	draw_shoot() {
-		shoot_interval = setInterval(() => {
-			for (let i = 0; i < this.laser_amount; i++) {
-				let laser = new Laser(this.x + i * 10, this.y);
-				laser.shoot();
-			}
-		}, 200);
-		// if (pressed_s == 1) {
-		// } else {
-		// 	setTimeout(() => {}, 190);
-		// 	clearInterval(shoot_interval);
-		// }
+	remove(){
+		ctx.clearRect(this.x, this.y, this.width, this.height);
+		
 	}
+	draw_shoot() {
+		if (pressed_s == 1) {
+			this.shoot_laser()
+			shoot_interval = setInterval(() => {
+				this.shoot_laser()
+			}, 200);
+		} else {
+			clearInterval(shoot_interval);
+		}
+	}
+	shoot_laser(){
+		for (let i = 0; i < this.laser_amount; i++) {
+				
+			let laser =  new Laser(
+				( this.x + (this.width  / (this.laser_amount + 1)  * (i + 1))) - 4 , 
+				this.y - this.height);
+			laser.shoot();
+		}
+	}
+
 }
 
 class Laser {
 	constructor(x, y) {
 		this.image = document.getElementById("laser");
+		this.image_hit1 = document.getElementById('hit1')
+		this.image_hit2 = document.getElementById('hit2')
 		this.height = this.image.height;
 		this.width = this.image.width;
 		this.x = x;
 		this.y = y;
 		this.strength = 1;
-		this.speed = 5;
+		this.speed = 4;
+		this.shoot_interval;
 	}
-	draw() {
-		ctx.drawImage(this.image, this.x, this.y);
+	draw(image) {
+		ctx.drawImage(image, this.x, this.y);
 	}
+	
 	shoot() {
-		let shoot_interval = setInterval(() => {
+		this.shoot_interval = setInterval(() => {
 			// console.log(this.image.height);
-			if (this.y >= this.height * -1) {
+			if (this.y >= this.height * -1 -10) {
 				// console.log(this.y);
 
-				this.remove();
-				this.draw();
-				this.y -= 10;
+				this.remove(this.image);
+				this.draw(this.image);
+				this.y -= this.speed;
 				player_1.draw();
-				// this.draw();
+
 			} else {
-				clearInterval(shoot_interval);
+				clearInterval(this.shoot_interval);
 			}
-		}, 30);
+			this.hit(this.height + 200)
+		}, 15);
 	}
-	remove() {
+	remove(image) {
 		// ctx.clearRect(this.x, this.y, canvas_w, canvas_h);
-		ctx.clearRect(this.x, this.y - 20, this.width, this.height + 30);
+		ctx.clearRect(this.x, this.y - 20, image.width, image.height + 30);
 	}
+	remove_hit(image) {
+		// ctx.clearRect(this.x, this.y, canvas_w, canvas_h);
+		ctx.clearRect(this.x - 7, this.y - 20, image.width, image.height);
+	}
+	draw_hit(image) {		
+		ctx.drawImage(image, this.x - 7, this.y, image.height / 2, image.width / 2);
+	}
+	hit(hit_point){
+		if (this.y <= hit_point) {
+			clearInterval(this.shoot_interval);
+			this.remove(this.image);
+			this.draw_hit(this.image_hit1)
+	
+			setTimeout(() => {
+				this.remove_hit(this.image_hit1);
+				this.draw_hit(this.image_hit2)
+				setTimeout(() => {
+					this.remove_hit(this.image_hit2);
+				}, 35);
+			}, 35);
+		} 
+		
+	}
+}
 }
 
 //initial draw ship
