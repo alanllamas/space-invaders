@@ -202,6 +202,49 @@ class Laser {
 		
 	}
 }
+class Rock{
+	constructor(rock, name){
+		this.name = `rock_${name}`;
+		this.image = document.getElementById(`${rock}_rock`)
+		this.width = this.image.width
+		this.height = this.image.height
+		this.x = this.width + Math.floor((Math.random() * (canvas_w - (this.width * 2))) + 1);
+		this.y = 0  - this.height
+		this.resistance = rock == 'big' ? 4 : rock == 'medium' ? 3 : rock == 'small' ? 2 : rock == 'tiny' ? 1 : null 
+		this.interval;
+	}
+	draw(image) {
+		ctx.drawImage(image, this.x, this.y);
+	}
+	remove(image) {
+		// ctx.clearRect(this.x, this.y, canvas_w, canvas_h);
+		ctx.clearRect(this.x, this.y - 20, image.width, image.height);
+	}
+	move(){
+		// console.log(this.x);
+		
+		// this.draw(this.image)
+		this.interval = setInterval(() => {
+			if (this.y < canvas_h) {
+				
+				this.remove(this.image)
+				this.draw(this.image)
+				this.y += 1
+				player_1.draw();
+				// player_1.draw_shoot(	)
+
+			} else if (this.y == canvas_h) {
+				// console.log( this.name + ' ya se paro');
+				
+				clearInterval(this.interval)
+			}
+			
+		}, 6);
+
+		
+
+	}
+
 }
 
 //initial draw ship
